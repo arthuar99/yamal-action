@@ -33,16 +33,14 @@ jobs:
 
             - name: SonarQube Scan
               run: |
-                  sonar-scanner \
+                  mvn sonar:sonar \
                   -Dsonar.host.url=${{ secrets.SONAR_URL || secrets.SONAR_HOST_URL || 'https://sonarcloud.io' }} \
                   -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
                   -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-                  -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-                  -Dsonar.sources=src/ \
+                  -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY || 'com.visualpathit:vprofile' }} \
                   -Dsonar.junit.reportsPath=target/surefire-reports/ \
                   -Dsonar.jacoco.reportsPath=target/jacoco.exec \
-                  -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml \
-                  -Dsonar.java.binaries=target/test-classes/com/visualpathit/account
+                  -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
 
             - name: SonarQube Quality Gate Check
               id: sonarqube-quality-gate-check
@@ -51,5 +49,3 @@ jobs:
               env:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
                   SONAR_HOST_URL: ${{ secrets.SONAR_URL || secrets.SONAR_HOST_URL || 'https://sonarcloud.io' }}
-                  SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
-                  SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
